@@ -27,7 +27,7 @@ void grafik(BuildContext context, double x, double y, String judul) {
                     fontFamily: AutofillHints.name,
                     fontSize: 17, 
                     fontWeight: FontWeight.bold,
-                    color: Colors.black
+                    color: Colors.pink
                   )
                 ),
           
