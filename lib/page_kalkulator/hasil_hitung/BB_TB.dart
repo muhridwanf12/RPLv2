@@ -2,8 +2,8 @@ part of '../_index.dart';
 
 //function hitung z score BB/TB
 //RUMUS MENGHITUNG Z SCORE BB/TB
-hitungBBTB(gender, bb, tb, usia, edema) {
-  if ((edema == "Ya") | (bb == 0) | (tb == 0) | (usia > 60) | (usia < 0)) {
+hitungBBTB(String gender, double bb, double tb, int usia, String edema) {
+  if ((edema == "Ya") | (bb == 0) | (tb == 0) | (usia > 60)) {
     return "NA";
   } else {
     //bulatkan tb menjadi x.0 atau x.5
@@ -18,12 +18,15 @@ hitungBBTB(gender, bb, tb, usia, edema) {
     if (usia < 25 && usia >= 0) {
       //jika laki-laki 0-24
       if (gender == "Laki-laki") {
-        if ((tb < 82.5) | (tb > 110)) {
+        if ((tb < 45) | (tb > 110)) {
           return "NA";
         } else {
-          double x = tb - 82.5;
+          double x = (tb - 45)*2;
           int baris = x.toInt();
-          if (bb < bbtbl024[baris][4]) {
+          if (baris > bbtbl024.length){
+            return "NA";
+          }
+          else if (bb < bbtbl024[baris][4]) {
             return ((bb - bbtbl024[baris][4]) / (bbtbl024[baris][4] - bbtbl024[baris][3]));
           } else if (bb > bbtbl024[baris][4]) {
             return ((bb - bbtbl024[baris][4]) / (bbtbl024[baris][5] - bbtbl024[baris][4]));
@@ -36,9 +39,12 @@ hitungBBTB(gender, bb, tb, usia, edema) {
         if ((tb < 45) | (tb > 110)) {
           return "NA";
         } else {
-          double x = tb - 45;
+          double x = (tb - 45)*2;
           int baris = x.toInt();
-          if (bb < bbtbp024[baris][4]) {
+          if (baris > bbtbp024.length){
+            return "NA";
+          }
+          else if (bb < bbtbp024[baris][4]) {
             return ((bb - bbtbp024[baris][4]) / (bbtbp024[baris][4] - bbtbp024[baris][3]));
           } else if (bb > bbtbp024[baris][4]) {
             return ((bb - bbtbp024[baris][4]) / (bb - bbtbp024[baris][5] - bb - bbtbp024[baris][4]));
@@ -55,9 +61,12 @@ hitungBBTB(gender, bb, tb, usia, edema) {
         if ((tb < 65) | (tb > 120)) {
           return "NA";
         } else {
-          double x = tb - 65;
+          double x = (tb - 65)*2;
           int baris = x.toInt();
-          if (bb < bbtbl2460[baris][4]) {
+          if (baris > bbtbl2460.length){
+            return "NA";
+          }
+          else if (bb < bbtbl2460[baris][4]) {
             return ((bb - bbtbl2460[baris][4]) / (bbtbl2460[baris][4] - bbtbl2460[baris][3]));
           } else if (bb > bbtbl2460[baris][4]) {
             return ((bb - bbtbl2460[baris][4]) / (bbtbl2460[baris][5] - bbtbl2460[baris][4]));
@@ -70,8 +79,11 @@ hitungBBTB(gender, bb, tb, usia, edema) {
         if ((tb < 65) | (tb > 120)) {
           return "NA";
         } else {
-          int baris = tb - 65;
-          if (bb < bbtbp2460[baris][4]) {
+          int baris = ((tb - 65).toInt())*2;
+          if (baris > bbtbp2460.length){
+            return "NA";
+          }
+          else if (bb < bbtbp2460[baris][4]) {
             return ((bb - bbtbp2460[baris][4]) / (bbtbp2460[baris][4] - bbtbp2460[baris][3]));
           } else if (bb > bbtbp2460[baris][4]) {
             return ((bb - bbtbp2460[baris][4]) / (bb - bbtbp2460[baris][5] - bb - bbtbp2460[baris][4]));

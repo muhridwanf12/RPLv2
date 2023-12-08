@@ -9,7 +9,7 @@ hitungUsia(DateTime pengukuran, DateTime lahir) {
 
   int usia = (tahun * 12) + bulan;
 
-  return usia < 0 ? 0 : usia.toDouble();
+  return usia < 0 ? 0 : usia;
 }
 
 

@@ -10,12 +10,12 @@ part of '../_index.dart';
 
 //3. Jika BBanak > BBmedian:
 //    z = (BBanak -BBmedian) / (BBpada+1SD - BBmedian)
-hitungBBU(gender, bb, usia, edema) {
+hitungBBU(String gender, double bb, int usia, String edema) {
   if ((edema == "Ya") | (bb == 0) | (usia < 0) | (usia > 60)) {
     return "NA";
   } else {
     if (gender == "Laki-laki") {
-      if (bb == bbul[usia][3]) {
+      if (bb == (bbul[usia][3])) {
         return ((bb - bbul[usia][3]) / bbul[usia][3]);
       } else {
         if (bb < bbul[usia][3]) {

@@ -14,7 +14,10 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
-  fl_chart: ^0.40.0
+  fl_chart: ^0.40.6
+  # states_rebuilder: ^6.3.0
+  
+  
 
 dev_dependencies:
   flutter_test:

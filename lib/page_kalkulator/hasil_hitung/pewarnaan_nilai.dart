@@ -11,7 +11,7 @@ beriwarna(nilai, batas1, batas2, double? batas3, double? batas4, double? batas5)
     return Colors.green;
   } else if (nilai > batas4) {      
     return Colors.red;
-  } else if (nilai > batas5) {
+  } else {
     return Colors.amber;
   }
 }

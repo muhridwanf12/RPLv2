@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tubes/page_asesmen/asesmen.dart';
 
 class AsesmenIndividu extends StatelessWidget {
   const AsesmenIndividu({
@@ -11,7 +12,10 @@ class AsesmenIndividu extends StatelessWidget {
       width: 250, // Lebar tombol
       height: 50, // Tinggi tombol
       child: ElevatedButton(
-        onPressed: () {}, //========direct ke page asesmen individu================
+        onPressed: () {
+
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const Asesmen()));
+        }, //========direct ke page asesmen individu================
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.blue, // Warna tombol
         ),

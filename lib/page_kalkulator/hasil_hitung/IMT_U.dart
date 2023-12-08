@@ -10,7 +10,7 @@ part of '../_index.dart';
 
 //3. Jika IMTanak = IMTmedian:
 //    z = (IMT anak - IMT median) / IMTmedian
-hitungIMTU(gender, bb, tb, usia, edema) {
+hitungIMTU(String gender, double bb, double tb, int usia, String edema) {
   if ((edema == "Ya") | (usia > 60) | (usia < 0) | (bb == 0) | (tb == 0)) {
     return "NA";
   } else {

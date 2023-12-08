@@ -11,8 +11,8 @@ class _kalkulatorState extends State<kalkulator> {
   String gender = "Laki-laki";
   String edema = "Tidak";
   DateTime pengukuran = DateTime.now();
-  DateTime lahir = DateTime.now();
-  double usia = 0;
+  DateTime lahir= DateTime.now();
+  int usia = 0;
   double bb = 0;
   double tb = 0;
 
@@ -49,7 +49,11 @@ class _kalkulatorState extends State<kalkulator> {
             TextField(
                 onTap: () async {
                   DateTime? pilihTanggal = await showDatePicker(
-                      context: context, initialDate: pengukuran, firstDate: DateTime(1945), lastDate: DateTime(2100));
+                      context: context, 
+                      initialDate: pengukuran, 
+                      firstDate: DateTime(1945), 
+                      lastDate: DateTime(2100),
+                      );
                   if (pilihTanggal != null && pilihTanggal != pengukuran) {
                     setState(() {
                       pengukuran = pilihTanggal;
@@ -153,7 +157,7 @@ class _kalkulatorState extends State<kalkulator> {
 
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Text(
-                "Usia : ${usia.toInt()} bulan",
+                "Usia : $usia bulan",
                 style: const TextStyle(fontSize: 11),
               )
             ]),
@@ -208,10 +212,10 @@ class _kalkulatorState extends State<kalkulator> {
                   children: [
                     const Text("Z Score Indeks Masa Tubuh terhadap Usia"),
                     Text(
-                      hitungIMTU(gender, bb, tb, usia.toInt(), edema).toString(), //nilai perhitungan
+                      hitungIMTU(gender, bb, tb, usia, edema).toString(), //nilai perhitungan
                       style: TextStyle(
                           color: Colors.white,
-                          backgroundColor: beriwarna(hitungIMTU(gender, bb, tb, usia, edema), -3, -2, 1, 3, 2), //warna sesuai perhitungan
+                          backgroundColor: beriwarna(hitungIMTU(gender, bb, tb, usia, edema), -2, -1, 1, 2, 1), //warna sesuai perhitungan
                           fontWeight: FontWeight.bold),
                     )
                   ],
@@ -223,10 +227,11 @@ class _kalkulatorState extends State<kalkulator> {
                   ),
                   child: IconButton(
                     onPressed: () { 
-                      grafik(context, tb, usia, "Grafik Indeks Masa Tubuh Terhadap Usia");
+                      grafik(context, usia, bb/pow(tb/100,2), 
+                      hitungIMTU(gender, bb, tb, usia, edema), "Grafik Indeks Masa Tubuh Terhadap Usia", gender, usia);
                     },
                     icon: const Icon(Icons.bar_chart_outlined),
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 )
               ),
@@ -242,10 +247,10 @@ class _kalkulatorState extends State<kalkulator> {
                   children: [
                     const Text("Z Score Berat Badan terhadap Tinggi Badan"),
                     Text(
-                      hitungBBTB(gender, bb, tb, usia.toInt(), edema).toString(), //nilai perhitungan
+                      hitungBBTB(gender, bb, tb, usia, edema).toString(), //nilai perhitungan
                       style: TextStyle(
                           color: Colors.white,
-                          backgroundColor: beriwarna(hitungBBTB(gender, bb, tb, usia, edema), -3, -2, 1, 3, 2), //warna sesuai hasil perhitungan
+                          backgroundColor: beriwarna(hitungBBTB(gender, bb, tb, usia, edema), -2, -1, 1, 2, 1), //warna sesuai hasil perhitungan
                           fontWeight: FontWeight.bold),
                     )
                   ],
@@ -257,10 +262,11 @@ class _kalkulatorState extends State<kalkulator> {
                   ),
                   child: IconButton(
                     onPressed: () { 
-                      grafik(context, tb, usia, "Grafik Berat Badan Terhadap Tinggi Badan");
+                      grafik(context, tb, bb, hitungBBTB(gender, bb, tb, usia, edema),
+                      "Grafik Berat Badan Terhadap Tinggi Badan", gender, usia);
                     },
                     icon: const Icon(Icons.bar_chart_outlined),
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 )
             ),
@@ -276,10 +282,10 @@ class _kalkulatorState extends State<kalkulator> {
                   children: [
                     const Text("Z Score Berat Badan terhadap Usia"),
                     Text(
-                      hitungBBU(gender, bb, usia.toInt(), edema).toString(), //hasil perhitungan
+                      hitungBBU(gender, bb, usia, edema).toString(), //hasil perhitungan
                       style: TextStyle(
                           color: Colors.white,
-                          backgroundColor: beriwarna(hitungBBU(gender, bb, usia, edema), -3, -2, 1, 1, null), //warna sesuai hasil perhitungan
+                          backgroundColor: beriwarna(hitungBBU(gender, bb, usia, edema), -2, -1, 1, 2, 1), //warna sesuai hasil perhitungan
                           fontWeight: FontWeight.bold),
                     )
                   ],
@@ -291,10 +297,11 @@ class _kalkulatorState extends State<kalkulator> {
                   ),
                   child: IconButton(
                     onPressed: () { 
-                      grafik(context, tb, usia, "Grafik Berat Badan Terhadap Usia");
+                      grafik(context, usia, bb, hitungBBU(gender, bb, usia, edema),
+                      "Grafik Berat Badan Terhadap Usia", gender, usia);
                     },
                     icon: const Icon(Icons.bar_chart_outlined),
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 )
             ),
@@ -310,10 +317,10 @@ class _kalkulatorState extends State<kalkulator> {
                   children: [
                     const Text("Z Score Tinggi Badan terhadap Usia"),
                     Text(
-                      hitungTBU(gender, tb, usia.toInt(), edema).toString(), //hasil perhitungan
+                      hitungTBU(gender, tb, usia, edema).toString(), //hasil perhitungan
                       style: TextStyle(
                           color: Colors.white,
-                          backgroundColor: beriwarna(hitungTBU(gender, tb, usia, edema), -3, -2, 3, 3, null), //warna sesuai hasil prhitungan
+                          backgroundColor: beriwarna(hitungTBU(gender, tb, usia, edema), -2, -1, 1, 2, 1), //warna sesuai hasil prhitungan
                           fontWeight: FontWeight.bold),
                     )
                   ],
@@ -325,10 +332,11 @@ class _kalkulatorState extends State<kalkulator> {
                   ),
                   child: IconButton(
                     onPressed: () { 
-                      grafik(context, tb, usia, "Grafik Tinggi Badan Terhadap Usia");
+                      grafik(context, usia, tb, hitungTBU(gender, tb, usia, edema),
+                      "Grafik Tinggi Badan Terhadap Usia", gender, usia);
                     },
                     icon: const Icon(Icons.bar_chart_outlined),
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 )
             ),

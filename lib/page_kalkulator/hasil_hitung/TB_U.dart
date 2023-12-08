@@ -11,7 +11,7 @@ part of '../_index.dart';
 //3. Jika TBanak > TBmedian:
 //    z = (TBanak - TBmedian) / (TBpada+1SD - TBmedian)
 
-hitungTBU(gender, tb, usia, edema) {
+hitungTBU( String gender, double tb, int usia, String edema) {
   if ((tb == 0) | (usia < 0) | (usia > 60)) {
     return "NA";
   } else {
