@@ -14,7 +14,7 @@ class AsesmenIndividu extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
 
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const Asesmen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  Asesmen()));
         }, //========direct ke page asesmen individu================
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.blue, // Warna tombol

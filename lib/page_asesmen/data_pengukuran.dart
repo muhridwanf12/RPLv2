@@ -19,7 +19,8 @@ const DataPengukuran({ Key? key }) : super(key: key);
             Navigator.pop(context);
           },
         ),
-      actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.delete), color: Colors.white,),
+      actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.delete
+      ), color: Colors.white,),
       const SizedBox(width: 10,)],
       ),
       body: Padding(
@@ -30,51 +31,13 @@ const DataPengukuran({ Key? key }) : super(key: key);
                  Row( 
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 70,
-                      height: 30,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.blue),
-                      child: const Center(child: Text('IMT/U',
-                      
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                      ),
-                      ),),  
-                          ),
-                    const SizedBox(width: 20,),
-                    Container(
-                      width: 70,
-                      height: 30,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.blue),
-                      child: const Center(child: Text('BB/TB',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                           color: Colors.white
-                      ),)),  
-                          ),
-                    const SizedBox(width: 20,),
-                    Container(
-                      width: 70,
-                      height: 30,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.blue),
-                      child: const Center(child: Text('BB/U',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                           color: Colors.white
-                      ),)),  
-                          ),
-                    const SizedBox(width: 20,),
-                    Container(
-                      width: 70,
-                      height: 30,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.blue),
-                      child: const Center(child: Text('TB/U',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                           color: Colors.white
-                      ),)),  
-                          ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      // style: ButtonStyle(shape: MaterialStatePropertyAll(10)),
+                      child: const Text('IMT/U'),
+                    ),
+                    const SizedBox(width: 20),
+                    
                           
                   ],),
                   const SizedBox(height: 20),
