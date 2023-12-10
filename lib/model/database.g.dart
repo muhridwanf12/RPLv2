@@ -27,6 +27,14 @@ class $AnakTable extends Anak with TableInfo<$AnakTable, AnakData> {
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _genderMeta = const VerificationMeta('gender');
+  @override
+  late final GeneratedColumn<String> gender = GeneratedColumn<String>(
+      'gender', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
   static const VerificationMeta _tgl_lahirMeta =
       const VerificationMeta('tgl_lahir');
   @override
@@ -53,7 +61,7 @@ class $AnakTable extends Anak with TableInfo<$AnakTable, AnakData> {
       requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id_anak, nama_anak, tgl_lahir, nama_ayah, nama_ibu];
+      [id_anak, nama_anak, gender, tgl_lahir, nama_ayah, nama_ibu];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -73,6 +81,12 @@ class $AnakTable extends Anak with TableInfo<$AnakTable, AnakData> {
           nama_anak.isAcceptableOrUnknown(data['nama_anak']!, _nama_anakMeta));
     } else if (isInserting) {
       context.missing(_nama_anakMeta);
+    }
+    if (data.containsKey('gender')) {
+      context.handle(_genderMeta,
+          gender.isAcceptableOrUnknown(data['gender']!, _genderMeta));
+    } else if (isInserting) {
+      context.missing(_genderMeta);
     }
     if (data.containsKey('tgl_lahir')) {
       context.handle(_tgl_lahirMeta,
@@ -105,6 +119,8 @@ class $AnakTable extends Anak with TableInfo<$AnakTable, AnakData> {
           .read(DriftSqlType.int, data['${effectivePrefix}id_anak'])!,
       nama_anak: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}nama_anak'])!,
+      gender: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}gender'])!,
       tgl_lahir: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}tgl_lahir'])!,
       nama_ayah: attachedDatabase.typeMapping
@@ -123,12 +139,14 @@ class $AnakTable extends Anak with TableInfo<$AnakTable, AnakData> {
 class AnakData extends DataClass implements Insertable<AnakData> {
   final int id_anak;
   final String nama_anak;
+  final String gender;
   final DateTime tgl_lahir;
   final String nama_ayah;
   final String nama_ibu;
   const AnakData(
       {required this.id_anak,
       required this.nama_anak,
+      required this.gender,
       required this.tgl_lahir,
       required this.nama_ayah,
       required this.nama_ibu});
@@ -137,6 +155,7 @@ class AnakData extends DataClass implements Insertable<AnakData> {
     final map = <String, Expression>{};
     map['id_anak'] = Variable<int>(id_anak);
     map['nama_anak'] = Variable<String>(nama_anak);
+    map['gender'] = Variable<String>(gender);
     map['tgl_lahir'] = Variable<DateTime>(tgl_lahir);
     map['nama_ayah'] = Variable<String>(nama_ayah);
     map['nama_ibu'] = Variable<String>(nama_ibu);
@@ -147,6 +166,7 @@ class AnakData extends DataClass implements Insertable<AnakData> {
     return AnakCompanion(
       id_anak: Value(id_anak),
       nama_anak: Value(nama_anak),
+      gender: Value(gender),
       tgl_lahir: Value(tgl_lahir),
       nama_ayah: Value(nama_ayah),
       nama_ibu: Value(nama_ibu),
@@ -159,6 +179,7 @@ class AnakData extends DataClass implements Insertable<AnakData> {
     return AnakData(
       id_anak: serializer.fromJson<int>(json['id_anak']),
       nama_anak: serializer.fromJson<String>(json['nama_anak']),
+      gender: serializer.fromJson<String>(json['gender']),
       tgl_lahir: serializer.fromJson<DateTime>(json['tgl_lahir']),
       nama_ayah: serializer.fromJson<String>(json['nama_ayah']),
       nama_ibu: serializer.fromJson<String>(json['nama_ibu']),
@@ -170,6 +191,7 @@ class AnakData extends DataClass implements Insertable<AnakData> {
     return <String, dynamic>{
       'id_anak': serializer.toJson<int>(id_anak),
       'nama_anak': serializer.toJson<String>(nama_anak),
+      'gender': serializer.toJson<String>(gender),
       'tgl_lahir': serializer.toJson<DateTime>(tgl_lahir),
       'nama_ayah': serializer.toJson<String>(nama_ayah),
       'nama_ibu': serializer.toJson<String>(nama_ibu),
@@ -179,12 +201,14 @@ class AnakData extends DataClass implements Insertable<AnakData> {
   AnakData copyWith(
           {int? id_anak,
           String? nama_anak,
+          String? gender,
           DateTime? tgl_lahir,
           String? nama_ayah,
           String? nama_ibu}) =>
       AnakData(
         id_anak: id_anak ?? this.id_anak,
         nama_anak: nama_anak ?? this.nama_anak,
+        gender: gender ?? this.gender,
         tgl_lahir: tgl_lahir ?? this.tgl_lahir,
         nama_ayah: nama_ayah ?? this.nama_ayah,
         nama_ibu: nama_ibu ?? this.nama_ibu,
@@ -194,6 +218,7 @@ class AnakData extends DataClass implements Insertable<AnakData> {
     return (StringBuffer('AnakData(')
           ..write('id_anak: $id_anak, ')
           ..write('nama_anak: $nama_anak, ')
+          ..write('gender: $gender, ')
           ..write('tgl_lahir: $tgl_lahir, ')
           ..write('nama_ayah: $nama_ayah, ')
           ..write('nama_ibu: $nama_ibu')
@@ -203,13 +228,14 @@ class AnakData extends DataClass implements Insertable<AnakData> {
 
   @override
   int get hashCode =>
-      Object.hash(id_anak, nama_anak, tgl_lahir, nama_ayah, nama_ibu);
+      Object.hash(id_anak, nama_anak, gender, tgl_lahir, nama_ayah, nama_ibu);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is AnakData &&
           other.id_anak == this.id_anak &&
           other.nama_anak == this.nama_anak &&
+          other.gender == this.gender &&
           other.tgl_lahir == this.tgl_lahir &&
           other.nama_ayah == this.nama_ayah &&
           other.nama_ibu == this.nama_ibu);
@@ -218,12 +244,14 @@ class AnakData extends DataClass implements Insertable<AnakData> {
 class AnakCompanion extends UpdateCompanion<AnakData> {
   final Value<int> id_anak;
   final Value<String> nama_anak;
+  final Value<String> gender;
   final Value<DateTime> tgl_lahir;
   final Value<String> nama_ayah;
   final Value<String> nama_ibu;
   const AnakCompanion({
     this.id_anak = const Value.absent(),
     this.nama_anak = const Value.absent(),
+    this.gender = const Value.absent(),
     this.tgl_lahir = const Value.absent(),
     this.nama_ayah = const Value.absent(),
     this.nama_ibu = const Value.absent(),
@@ -231,16 +259,19 @@ class AnakCompanion extends UpdateCompanion<AnakData> {
   AnakCompanion.insert({
     this.id_anak = const Value.absent(),
     required String nama_anak,
+    required String gender,
     required DateTime tgl_lahir,
     required String nama_ayah,
     required String nama_ibu,
   })  : nama_anak = Value(nama_anak),
+        gender = Value(gender),
         tgl_lahir = Value(tgl_lahir),
         nama_ayah = Value(nama_ayah),
         nama_ibu = Value(nama_ibu);
   static Insertable<AnakData> custom({
     Expression<int>? id_anak,
     Expression<String>? nama_anak,
+    Expression<String>? gender,
     Expression<DateTime>? tgl_lahir,
     Expression<String>? nama_ayah,
     Expression<String>? nama_ibu,
@@ -248,6 +279,7 @@ class AnakCompanion extends UpdateCompanion<AnakData> {
     return RawValuesInsertable({
       if (id_anak != null) 'id_anak': id_anak,
       if (nama_anak != null) 'nama_anak': nama_anak,
+      if (gender != null) 'gender': gender,
       if (tgl_lahir != null) 'tgl_lahir': tgl_lahir,
       if (nama_ayah != null) 'nama_ayah': nama_ayah,
       if (nama_ibu != null) 'nama_ibu': nama_ibu,
@@ -257,12 +289,14 @@ class AnakCompanion extends UpdateCompanion<AnakData> {
   AnakCompanion copyWith(
       {Value<int>? id_anak,
       Value<String>? nama_anak,
+      Value<String>? gender,
       Value<DateTime>? tgl_lahir,
       Value<String>? nama_ayah,
       Value<String>? nama_ibu}) {
     return AnakCompanion(
       id_anak: id_anak ?? this.id_anak,
       nama_anak: nama_anak ?? this.nama_anak,
+      gender: gender ?? this.gender,
       tgl_lahir: tgl_lahir ?? this.tgl_lahir,
       nama_ayah: nama_ayah ?? this.nama_ayah,
       nama_ibu: nama_ibu ?? this.nama_ibu,
@@ -277,6 +311,9 @@ class AnakCompanion extends UpdateCompanion<AnakData> {
     }
     if (nama_anak.present) {
       map['nama_anak'] = Variable<String>(nama_anak.value);
+    }
+    if (gender.present) {
+      map['gender'] = Variable<String>(gender.value);
     }
     if (tgl_lahir.present) {
       map['tgl_lahir'] = Variable<DateTime>(tgl_lahir.value);
@@ -295,6 +332,7 @@ class AnakCompanion extends UpdateCompanion<AnakData> {
     return (StringBuffer('AnakCompanion(')
           ..write('id_anak: $id_anak, ')
           ..write('nama_anak: $nama_anak, ')
+          ..write('gender: $gender, ')
           ..write('tgl_lahir: $tgl_lahir, ')
           ..write('nama_ayah: $nama_ayah, ')
           ..write('nama_ibu: $nama_ibu')
@@ -331,6 +369,14 @@ class $PengukuranTable extends Pengukuran
   late final GeneratedColumn<DateTime> tgl_pengukuran =
       GeneratedColumn<DateTime>('tgl_pengukuran', aliasedName, false,
           type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _edemaMeta = const VerificationMeta('edema');
+  @override
+  late final GeneratedColumn<String> edema = GeneratedColumn<String>(
+      'edema', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 2, maxTextLength: 5),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
   static const VerificationMeta _usiaMeta = const VerificationMeta('usia');
   @override
   late final GeneratedColumn<int> usia = GeneratedColumn<int>(
@@ -349,28 +395,29 @@ class $PengukuranTable extends Pengukuran
   static const VerificationMeta _imtuMeta = const VerificationMeta('imtu');
   @override
   late final GeneratedColumn<double> imtu = GeneratedColumn<double>(
-      'imtu', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      'imtu', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   static const VerificationMeta _tbbbMeta = const VerificationMeta('tbbb');
   @override
   late final GeneratedColumn<double> tbbb = GeneratedColumn<double>(
-      'tbbb', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      'tbbb', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   static const VerificationMeta _tbuMeta = const VerificationMeta('tbu');
   @override
   late final GeneratedColumn<double> tbu = GeneratedColumn<double>(
-      'tbu', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      'tbu', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   static const VerificationMeta _bbuMeta = const VerificationMeta('bbu');
   @override
   late final GeneratedColumn<double> bbu = GeneratedColumn<double>(
-      'bbu', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      'bbu', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id_pengukuran,
         id_anak,
         tgl_pengukuran,
+        edema,
         usia,
         tb,
         bb,
@@ -409,6 +456,12 @@ class $PengukuranTable extends Pengukuran
     } else if (isInserting) {
       context.missing(_tgl_pengukuranMeta);
     }
+    if (data.containsKey('edema')) {
+      context.handle(
+          _edemaMeta, edema.isAcceptableOrUnknown(data['edema']!, _edemaMeta));
+    } else if (isInserting) {
+      context.missing(_edemaMeta);
+    }
     if (data.containsKey('usia')) {
       context.handle(
           _usiaMeta, usia.isAcceptableOrUnknown(data['usia']!, _usiaMeta));
@@ -428,26 +481,18 @@ class $PengukuranTable extends Pengukuran
     if (data.containsKey('imtu')) {
       context.handle(
           _imtuMeta, imtu.isAcceptableOrUnknown(data['imtu']!, _imtuMeta));
-    } else if (isInserting) {
-      context.missing(_imtuMeta);
     }
     if (data.containsKey('tbbb')) {
       context.handle(
           _tbbbMeta, tbbb.isAcceptableOrUnknown(data['tbbb']!, _tbbbMeta));
-    } else if (isInserting) {
-      context.missing(_tbbbMeta);
     }
     if (data.containsKey('tbu')) {
       context.handle(
           _tbuMeta, tbu.isAcceptableOrUnknown(data['tbu']!, _tbuMeta));
-    } else if (isInserting) {
-      context.missing(_tbuMeta);
     }
     if (data.containsKey('bbu')) {
       context.handle(
           _bbuMeta, bbu.isAcceptableOrUnknown(data['bbu']!, _bbuMeta));
-    } else if (isInserting) {
-      context.missing(_bbuMeta);
     }
     return context;
   }
@@ -464,6 +509,8 @@ class $PengukuranTable extends Pengukuran
           .read(DriftSqlType.int, data['${effectivePrefix}id_anak'])!,
       tgl_pengukuran: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}tgl_pengukuran'])!,
+      edema: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}edema'])!,
       usia: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}usia'])!,
       tb: attachedDatabase.typeMapping
@@ -471,13 +518,13 @@ class $PengukuranTable extends Pengukuran
       bb: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}bb'])!,
       imtu: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}imtu'])!,
+          .read(DriftSqlType.double, data['${effectivePrefix}imtu']),
       tbbb: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}tbbb'])!,
+          .read(DriftSqlType.double, data['${effectivePrefix}tbbb']),
       tbu: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}tbu'])!,
+          .read(DriftSqlType.double, data['${effectivePrefix}tbu']),
       bbu: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}bbu'])!,
+          .read(DriftSqlType.double, data['${effectivePrefix}bbu']),
     );
   }
 
@@ -491,37 +538,48 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
   final int id_pengukuran;
   final int id_anak;
   final DateTime tgl_pengukuran;
+  final String edema;
   final int usia;
   final double tb;
   final double bb;
-  final double imtu;
-  final double tbbb;
-  final double tbu;
-  final double bbu;
+  final double? imtu;
+  final double? tbbb;
+  final double? tbu;
+  final double? bbu;
   const PengukuranData(
       {required this.id_pengukuran,
       required this.id_anak,
       required this.tgl_pengukuran,
+      required this.edema,
       required this.usia,
       required this.tb,
       required this.bb,
-      required this.imtu,
-      required this.tbbb,
-      required this.tbu,
-      required this.bbu});
+      this.imtu,
+      this.tbbb,
+      this.tbu,
+      this.bbu});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id_pengukuran'] = Variable<int>(id_pengukuran);
     map['id_anak'] = Variable<int>(id_anak);
     map['tgl_pengukuran'] = Variable<DateTime>(tgl_pengukuran);
+    map['edema'] = Variable<String>(edema);
     map['usia'] = Variable<int>(usia);
     map['tb'] = Variable<double>(tb);
     map['bb'] = Variable<double>(bb);
-    map['imtu'] = Variable<double>(imtu);
-    map['tbbb'] = Variable<double>(tbbb);
-    map['tbu'] = Variable<double>(tbu);
-    map['bbu'] = Variable<double>(bbu);
+    if (!nullToAbsent || imtu != null) {
+      map['imtu'] = Variable<double>(imtu);
+    }
+    if (!nullToAbsent || tbbb != null) {
+      map['tbbb'] = Variable<double>(tbbb);
+    }
+    if (!nullToAbsent || tbu != null) {
+      map['tbu'] = Variable<double>(tbu);
+    }
+    if (!nullToAbsent || bbu != null) {
+      map['bbu'] = Variable<double>(bbu);
+    }
     return map;
   }
 
@@ -530,13 +588,14 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
       id_pengukuran: Value(id_pengukuran),
       id_anak: Value(id_anak),
       tgl_pengukuran: Value(tgl_pengukuran),
+      edema: Value(edema),
       usia: Value(usia),
       tb: Value(tb),
       bb: Value(bb),
-      imtu: Value(imtu),
-      tbbb: Value(tbbb),
-      tbu: Value(tbu),
-      bbu: Value(bbu),
+      imtu: imtu == null && nullToAbsent ? const Value.absent() : Value(imtu),
+      tbbb: tbbb == null && nullToAbsent ? const Value.absent() : Value(tbbb),
+      tbu: tbu == null && nullToAbsent ? const Value.absent() : Value(tbu),
+      bbu: bbu == null && nullToAbsent ? const Value.absent() : Value(bbu),
     );
   }
 
@@ -547,13 +606,14 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
       id_pengukuran: serializer.fromJson<int>(json['id_pengukuran']),
       id_anak: serializer.fromJson<int>(json['id_anak']),
       tgl_pengukuran: serializer.fromJson<DateTime>(json['tgl_pengukuran']),
+      edema: serializer.fromJson<String>(json['edema']),
       usia: serializer.fromJson<int>(json['usia']),
       tb: serializer.fromJson<double>(json['tb']),
       bb: serializer.fromJson<double>(json['bb']),
-      imtu: serializer.fromJson<double>(json['imtu']),
-      tbbb: serializer.fromJson<double>(json['tbbb']),
-      tbu: serializer.fromJson<double>(json['tbu']),
-      bbu: serializer.fromJson<double>(json['bbu']),
+      imtu: serializer.fromJson<double?>(json['imtu']),
+      tbbb: serializer.fromJson<double?>(json['tbbb']),
+      tbu: serializer.fromJson<double?>(json['tbu']),
+      bbu: serializer.fromJson<double?>(json['bbu']),
     );
   }
   @override
@@ -563,13 +623,14 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
       'id_pengukuran': serializer.toJson<int>(id_pengukuran),
       'id_anak': serializer.toJson<int>(id_anak),
       'tgl_pengukuran': serializer.toJson<DateTime>(tgl_pengukuran),
+      'edema': serializer.toJson<String>(edema),
       'usia': serializer.toJson<int>(usia),
       'tb': serializer.toJson<double>(tb),
       'bb': serializer.toJson<double>(bb),
-      'imtu': serializer.toJson<double>(imtu),
-      'tbbb': serializer.toJson<double>(tbbb),
-      'tbu': serializer.toJson<double>(tbu),
-      'bbu': serializer.toJson<double>(bbu),
+      'imtu': serializer.toJson<double?>(imtu),
+      'tbbb': serializer.toJson<double?>(tbbb),
+      'tbu': serializer.toJson<double?>(tbu),
+      'bbu': serializer.toJson<double?>(bbu),
     };
   }
 
@@ -577,24 +638,26 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
           {int? id_pengukuran,
           int? id_anak,
           DateTime? tgl_pengukuran,
+          String? edema,
           int? usia,
           double? tb,
           double? bb,
-          double? imtu,
-          double? tbbb,
-          double? tbu,
-          double? bbu}) =>
+          Value<double?> imtu = const Value.absent(),
+          Value<double?> tbbb = const Value.absent(),
+          Value<double?> tbu = const Value.absent(),
+          Value<double?> bbu = const Value.absent()}) =>
       PengukuranData(
         id_pengukuran: id_pengukuran ?? this.id_pengukuran,
         id_anak: id_anak ?? this.id_anak,
         tgl_pengukuran: tgl_pengukuran ?? this.tgl_pengukuran,
+        edema: edema ?? this.edema,
         usia: usia ?? this.usia,
         tb: tb ?? this.tb,
         bb: bb ?? this.bb,
-        imtu: imtu ?? this.imtu,
-        tbbb: tbbb ?? this.tbbb,
-        tbu: tbu ?? this.tbu,
-        bbu: bbu ?? this.bbu,
+        imtu: imtu.present ? imtu.value : this.imtu,
+        tbbb: tbbb.present ? tbbb.value : this.tbbb,
+        tbu: tbu.present ? tbu.value : this.tbu,
+        bbu: bbu.present ? bbu.value : this.bbu,
       );
   @override
   String toString() {
@@ -602,6 +665,7 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
           ..write('id_pengukuran: $id_pengukuran, ')
           ..write('id_anak: $id_anak, ')
           ..write('tgl_pengukuran: $tgl_pengukuran, ')
+          ..write('edema: $edema, ')
           ..write('usia: $usia, ')
           ..write('tb: $tb, ')
           ..write('bb: $bb, ')
@@ -614,8 +678,8 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
   }
 
   @override
-  int get hashCode => Object.hash(id_pengukuran, id_anak, tgl_pengukuran, usia,
-      tb, bb, imtu, tbbb, tbu, bbu);
+  int get hashCode => Object.hash(id_pengukuran, id_anak, tgl_pengukuran, edema,
+      usia, tb, bb, imtu, tbbb, tbu, bbu);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -623,6 +687,7 @@ class PengukuranData extends DataClass implements Insertable<PengukuranData> {
           other.id_pengukuran == this.id_pengukuran &&
           other.id_anak == this.id_anak &&
           other.tgl_pengukuran == this.tgl_pengukuran &&
+          other.edema == this.edema &&
           other.usia == this.usia &&
           other.tb == this.tb &&
           other.bb == this.bb &&
@@ -636,17 +701,19 @@ class PengukuranCompanion extends UpdateCompanion<PengukuranData> {
   final Value<int> id_pengukuran;
   final Value<int> id_anak;
   final Value<DateTime> tgl_pengukuran;
+  final Value<String> edema;
   final Value<int> usia;
   final Value<double> tb;
   final Value<double> bb;
-  final Value<double> imtu;
-  final Value<double> tbbb;
-  final Value<double> tbu;
-  final Value<double> bbu;
+  final Value<double?> imtu;
+  final Value<double?> tbbb;
+  final Value<double?> tbu;
+  final Value<double?> bbu;
   const PengukuranCompanion({
     this.id_pengukuran = const Value.absent(),
     this.id_anak = const Value.absent(),
     this.tgl_pengukuran = const Value.absent(),
+    this.edema = const Value.absent(),
     this.usia = const Value.absent(),
     this.tb = const Value.absent(),
     this.bb = const Value.absent(),
@@ -659,26 +726,25 @@ class PengukuranCompanion extends UpdateCompanion<PengukuranData> {
     this.id_pengukuran = const Value.absent(),
     required int id_anak,
     required DateTime tgl_pengukuran,
+    required String edema,
     required int usia,
     required double tb,
     required double bb,
-    required double imtu,
-    required double tbbb,
-    required double tbu,
-    required double bbu,
+    this.imtu = const Value.absent(),
+    this.tbbb = const Value.absent(),
+    this.tbu = const Value.absent(),
+    this.bbu = const Value.absent(),
   })  : id_anak = Value(id_anak),
         tgl_pengukuran = Value(tgl_pengukuran),
+        edema = Value(edema),
         usia = Value(usia),
         tb = Value(tb),
-        bb = Value(bb),
-        imtu = Value(imtu),
-        tbbb = Value(tbbb),
-        tbu = Value(tbu),
-        bbu = Value(bbu);
+        bb = Value(bb);
   static Insertable<PengukuranData> custom({
     Expression<int>? id_pengukuran,
     Expression<int>? id_anak,
     Expression<DateTime>? tgl_pengukuran,
+    Expression<String>? edema,
     Expression<int>? usia,
     Expression<double>? tb,
     Expression<double>? bb,
@@ -691,6 +757,7 @@ class PengukuranCompanion extends UpdateCompanion<PengukuranData> {
       if (id_pengukuran != null) 'id_pengukuran': id_pengukuran,
       if (id_anak != null) 'id_anak': id_anak,
       if (tgl_pengukuran != null) 'tgl_pengukuran': tgl_pengukuran,
+      if (edema != null) 'edema': edema,
       if (usia != null) 'usia': usia,
       if (tb != null) 'tb': tb,
       if (bb != null) 'bb': bb,
@@ -705,17 +772,19 @@ class PengukuranCompanion extends UpdateCompanion<PengukuranData> {
       {Value<int>? id_pengukuran,
       Value<int>? id_anak,
       Value<DateTime>? tgl_pengukuran,
+      Value<String>? edema,
       Value<int>? usia,
       Value<double>? tb,
       Value<double>? bb,
-      Value<double>? imtu,
-      Value<double>? tbbb,
-      Value<double>? tbu,
-      Value<double>? bbu}) {
+      Value<double?>? imtu,
+      Value<double?>? tbbb,
+      Value<double?>? tbu,
+      Value<double?>? bbu}) {
     return PengukuranCompanion(
       id_pengukuran: id_pengukuran ?? this.id_pengukuran,
       id_anak: id_anak ?? this.id_anak,
       tgl_pengukuran: tgl_pengukuran ?? this.tgl_pengukuran,
+      edema: edema ?? this.edema,
       usia: usia ?? this.usia,
       tb: tb ?? this.tb,
       bb: bb ?? this.bb,
@@ -737,6 +806,9 @@ class PengukuranCompanion extends UpdateCompanion<PengukuranData> {
     }
     if (tgl_pengukuran.present) {
       map['tgl_pengukuran'] = Variable<DateTime>(tgl_pengukuran.value);
+    }
+    if (edema.present) {
+      map['edema'] = Variable<String>(edema.value);
     }
     if (usia.present) {
       map['usia'] = Variable<int>(usia.value);
@@ -768,6 +840,7 @@ class PengukuranCompanion extends UpdateCompanion<PengukuranData> {
           ..write('id_pengukuran: $id_pengukuran, ')
           ..write('id_anak: $id_anak, ')
           ..write('tgl_pengukuran: $tgl_pengukuran, ')
+          ..write('edema: $edema, ')
           ..write('usia: $usia, ')
           ..write('tb: $tb, ')
           ..write('bb: $bb, ')

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tubes/model/database.dart';
-import 'package:tubes/model/tb_anak.dart';
 import 'package:tubes/page_asesmen/data_anak.dart';
 import 'package:tubes/page_asesmen/data_pengukuran.dart';
 
-class Asesmen extends StatelessWidget {
+class Asesmen extends StatefulWidget {
   Asesmen({super.key});
-  final AppDb database = AppDb();
 
-  Future<List<AnakData>> getAllAnak() async {
-    return await database.getAllAnak();
-  }
-  
+  @override
+  State<Asesmen> createState() => _AsesmenState();
+}
+
+class _AsesmenState extends State<Asesmen> {
+   final AppDb database = AppDb();
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +36,15 @@ class Asesmen extends StatelessWidget {
           },
         ),
         actions: [
+          //tombol hapus semua data anak
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await database.deleteAllAnak();
+              setState(() {
+                
+                
+              });
+            },
             icon: const Icon(Icons.delete),
             color: Colors.white,
           ),
@@ -44,41 +52,45 @@ class Asesmen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<List<AnakData>>(
-        future: getAllAnak(),
+        future: database.getAllAnak(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator(color: Colors.blue,));
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            // Data loaded successfully
+            //jika berhasil
             List<AnakData> anakList = snapshot.data!;
-
-            // Use the data in your UI
             return ListView.builder(
               itemCount: anakList.length,
               itemBuilder: (context, index) {
                 AnakData anak = anakList[index];
-                // Use the anak in your list
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                      anak.nama_anak,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                return Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(
+                        anak.nama_anak,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text('Ny.${anak.nama_ibu} & Tn.${anak.nama_ayah}'),
+                      // trailing: IconButton(
+                      //   onPressed: () {
+                      //     // edit_data_anak(anak.id_anak);
+                      //   },
+                      //   icon: const Icon(Icons.edit),
+                      // ),
+
+                      //saat list diklik
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DataPengukuran(id_anak: anak.id_anak),
+                          ),
+                        );
+                      },
                     ),
-                    subtitle: Text('${anak.nama_ibu} & ${anak.nama_ayah}'),
-                    trailing: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.edit),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DataPengukuran(),
-                        ),
-                      );
-                    },
                   ),
                 );
               },
@@ -87,10 +99,10 @@ class Asesmen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TambahAnak()),
+            MaterialPageRoute(builder: (context) => const TambahAnak()),
           );
         },
         shape: const CircleBorder(),

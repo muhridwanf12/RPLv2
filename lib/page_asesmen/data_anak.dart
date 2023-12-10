@@ -10,29 +10,31 @@ const TambahAnak({ Key? key }) : super(key: key);
 }
 
 class _TambahAnakState extends State<TambahAnak> {
-  String gender= "Laki-laki";
-  DateTime tanggal = DateTime.now();
+  late String gender = "Laki-laki";
+  late DateTime tanggal;
+  
 
 
    TextEditingController cont_nama = TextEditingController();
    TextEditingController cont_tgl_lahir = TextEditingController();
-   TextEditingController cont_gender = TextEditingController();
+  //  TextEditingController cont_gender = TextEditingController();
    TextEditingController  cont_nama_ayah = TextEditingController();
    TextEditingController cont_nama_ibu = TextEditingController();
    final AppDb database = AppDb();
 
    Future insertanak(String nama_anak, String gender, DateTime tgl_lahir, String nama_ayah, String nama_ibu) async{
     await database.into(database.anak).insert(AnakCompanion.insert(
-      nama_anak: nama_anak, tgl_lahir: tgl_lahir, nama_ayah: nama_ayah, nama_ibu: nama_ibu));
+      gender: gender, nama_anak: nama_anak, tgl_lahir: tgl_lahir, nama_ayah: nama_ayah, nama_ibu: nama_ibu));
       print("berhasil");
    }
+
 
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Input Data Anak',  style: TextStyle(color: Colors.white),),
+        title: const Center(child: Text('Input Data Anak',  style: TextStyle(color: Colors.white),)),
         backgroundColor: Colors.blue,
         leading: IconButton(
           icon: const Icon(
@@ -49,12 +51,19 @@ class _TambahAnakState extends State<TambahAnak> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
+
+            //form nama anak
             TextField(
               controller: cont_nama,
               decoration: const InputDecoration(label: Text('Nama Anak'),
               border: OutlineInputBorder()),
             ),
+
+            //jarak pemisah
             const SizedBox(height: 20,),
+
+
+            //form tanggal lahir
             TextField(
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
@@ -65,19 +74,16 @@ class _TambahAnakState extends State<TambahAnak> {
         
                   if (pickedDate != null) {
                     setState(() {
-                    tanggal = pickedDate;
-                     cont_tgl_lahir.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                    cont_tgl_lahir.text = DateFormat('dd-MM-yyyy').format(pickedDate);
+                    tanggal = DateFormat('yyyy-MM-dd').parse(cont_tgl_lahir.text, true);
                     });
                   }
                 },
                 readOnly: true,
-                controller: TextEditingController(
-                  text: DateFormat('dd-MM-yyyy').format(tanggal),
-                ),
+                controller: cont_tgl_lahir,
                 decoration: const InputDecoration(
                   labelText: "Tanggal lahir",
                   border: OutlineInputBorder(),
-                  
                 ),
                 
         ),
@@ -104,7 +110,7 @@ class _TambahAnakState extends State<TambahAnak> {
                     groupValue: gender,
                     onChanged: (value) {
                       setState(() {
-                        gender = value.toString();
+                        gender= value.toString();
                       });
                     },
                   ),
@@ -135,11 +141,30 @@ class _TambahAnakState extends State<TambahAnak> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue
                         ),
-                        onPressed: () {
-                          DateTime tanggal_parse = DateFormat('yyyy-MM-dd').parse(cont_tgl_lahir.text, true);
-                          //insertanak(cont_nama.text, cont_gender.text, tanggal_parse , cont_nama_ayah.text, cont_nama_ibu.text);
-                          insertanak(cont_nama.text, gender, tanggal_parse, cont_nama_ayah.text, cont_nama_ibu.text);
-                          Navigator.pop(context);
+                        onPressed: () async {
+                          if (cont_nama.text.isEmpty | cont_nama_ayah.text.isEmpty |
+                          (gender == null) | cont_nama_ibu.text.isEmpty | cont_tgl_lahir.text.isEmpty){
+                            showDialog(
+                              context: context, 
+                              builder: (context){
+                                return AlertDialog(
+                                  title: const Text("Lengkapi semua data!"),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed:() {
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: const ButtonStyle(
+                                      ),
+                                      child: const Text("OK"),
+                                    )
+                                  ],
+                                );
+                              });
+                          }else{
+                            insertanak(cont_nama.text, gender, tanggal, cont_nama_ayah.text, cont_nama_ibu.text);
+                            Navigator.pop(context);
+                          }
                         },
                         child: const Text('Simpan',
                         style: TextStyle(
